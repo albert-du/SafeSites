@@ -1,5 +1,7 @@
 let http = require('http')
 let fs = require('fs')
+let puppeteer = require('puppeteer');
+let cheerio = require("cheerio");
 
 let pathToStatic = "/home/alexander_i_bakalov/ConnectMyMind/ConnectMyMind/client/connect-my-mind/build/static/"
 let ip = "10.0.0.211"
@@ -8,7 +10,7 @@ let ip = "10.0.0.211"
 //hate speech
 let hateSpeechServiceID = "hateSpeech"
 let hateSpeechServicePort = 80
-let hateSpeechServiceEndPoint = "hateSpeech"
+let hateSpeechServiceEndPoint = "speech"
 
 //image proccessor
 let imageProcessorServiceID = "imageProcessor"
@@ -75,17 +77,67 @@ let server = http.createServer(function (req, res) {
 
         res.writeHead(200, { 'Content-Type': 'application/json' })
 
-        //server -> hate speech (url)
+        let text
         return fetch(
-            `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}?url=${url}`,
-            { method: 'GET'}
+            url,
+            { method: 'GET' }
         )
-            .catch(error => console.log("error (server -> hatespeech service):", error))
+            .catch(error => console.log("error (server -> url):", error))
             .then(response => response.text())
             .then(r => {
-                //server -> frontend
-                res.write(r)
-                res.end()
+                let $ = cheerio.load(r);
+                (async () => {
+                    const browser = await puppeteer.launch({
+                        headless: true
+                    });
+                    const page = (await browser.pages())[0];
+                    await page.goto(url);
+                    text = await page.$eval('*', (el) => el.innerText);
+
+                    await browser.close();
+
+                    let imagesArr = []
+                    $("img").each((i, e) => {
+                        let imgSrc = $(e).attr('src')
+
+                        if (imgSrc) {
+                            if (!imgSrc.startsWith("http")) {
+                                if (url.endsWith("/")) {
+                                    imgSrc = url.substring(0, url.length - 1) + imgSrc
+                                } else {
+                                    imgSrc = url + imgSrc
+                                }
+                            }
+                            imagesArr.push(imgSrc)
+                        }
+                    })
+
+                    let fetches = []
+                    for (let i = 0; i < imagesArr.length; i++) {
+                        fetches.push(
+                            fetch(
+                                `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?url=${imagesArr[i]}`,
+                                { method: 'GET' }
+                            )
+                                .catch(error => console.log("error (server -> image processor):", error))
+                                .then(response => response.text())
+                                .then(r => text += r)
+                        )
+                    }
+
+                    Promise.all(fetches).then(() => {
+                        return fetch(
+                            `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}?text=${text}`,
+                            { method: 'GET' }
+                        )
+                            .catch(error => console.log("error (server -> image processor):", error))
+                            .then(response => response.text())
+                            .then(r => {
+                                res.write(r)
+                                res.end()
+                            })
+                    })
+                })();
             })
     }
 
@@ -99,7 +151,7 @@ let server = http.createServer(function (req, res) {
         //server -> image processor (img url)
         return fetch(
             `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?url=${url}`,
-            { method: 'GET'}
+            { method: 'GET' }
         )
             .catch(error => console.log("error (server -> image processor):", error))
             .then(response => response.text())
