@@ -8,6 +8,7 @@ COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 
 # install the dependencies and packages in the requirements file
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements.txt
 
 # copy every content from the local file to the image
