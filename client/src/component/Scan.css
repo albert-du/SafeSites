@@ -1,0 +1,115 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.scanPage {
+    overflow-y: auto;
+}
+
+.header {
+    text-align: center;
+    margin-top: 125px;
+    font-size: 20px;
+}
+
+.description {
+    text-align:center;
+    margin-top: 20px;
+    font-size: 10px;
+    padding-left: 200px;
+    padding-right:200px;
+    color:rgb(83, 80, 80);
+}
+
+.search {
+    width: 100%;
+    min-height: 20vh;
+    padding: 5%;
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.results {
+    width: 95%;
+    margin-left: 30px;
+    height: 100px;
+    color:white;
+    display: flex;
+    background-color: black;
+    align-items: center;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+.searchingURL {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    display: flex;
+    background-color: black;
+    align-items:flex-end;
+    border-radius: 60px;
+    padding: 10px 20px;
+}
+.toxicity{
+    margin-left:20px;
+}
+.st{
+    margin-left:60px;
+}
+.o{
+    margin-left:60px;
+}
+.ia{
+    margin-left:60px;
+}
+.i{
+    margin-left:60px;
+}
+.t{
+    margin-left:60px;
+}
+.se{
+    margin-left:60px;
+}
+.searchingURL input {
+    flex: 1;
+    border: 0;
+    outline:none;
+    padding: 24px 20px;
+    background-color: black;
+    font-size: 20px;
+    color: white;
+}
+
+::placeholder{
+    color:rgb(221, 221, 221);
+}
+.search button {
+    border: 0;
+    color:black;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    background: white;
+    cursor: pointer;
+}
+.mission {
+    margin-top: 100px;
+    margin-left:75px;
+    margin-right:75px;
+}
+.header1{
+    font-size: 100px;
+}
+.header2{
+    margin-top:30px;
+    font-size:60px;
+}
+.endspacing{
+    margin-top:50px;
+}
