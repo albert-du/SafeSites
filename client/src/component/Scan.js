@@ -15,6 +15,9 @@ export default class Scan extends React.Component {
         opacity: "hidden",
         animation: "spin-anim 1.8s linear infinite",
     }
+    componentDidMount() {
+        document.title = "SafeSites";
+    }
     render() {
         let startingURL
 
