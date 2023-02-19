@@ -22,9 +22,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm ci --only=production
-# If you are building your code for production
-# RUN npm ci --only=production
-# RUN chmod -R o+rwx ./node_modules/puppeteer/.local-chromium
 
 # Bundle app source
 COPY . .
