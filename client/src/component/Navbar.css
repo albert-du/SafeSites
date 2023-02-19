@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Gloock&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Gloock', serif;
+}
+li {
+    list-style: none;
+}
+.navbar {
+    height: 10vh;
+    line-height: 10vh;
+    box-shadow: rgba(50, 50, 93, 0.23) 0 30px 30px -20px;
+}
+.logo {
+    font-size: 30px;
+}
+.nav-links {
+    display: flex;
+    justify-content: flex-end;
+    width: 95%;
+}
+a:link {
+    text-decoration: none;
+  }
+  
+  a:visited {
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: none;
+  }
+  
+  a:active {
+    text-decoration: none;
+  }
+.container{
+    max-width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-links li{
+    color: black;
+    font-size: 20px;
+    padding: 0 10px;
+    margin: 0 10px;
+    cursor: pointer;
+    text-transform: capitalize;
+    text-decoration: none;
+}
+.hero {
+    text-align: center;
+    margin-top: 10%;
+}
+.hero h1 {
+    text-align: center;
+    font-size: 80px;
+}
