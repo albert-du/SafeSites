@@ -1,13 +1,14 @@
 import http from 'http'
 import fetch from 'node-fetch'
 import Tesseract from 'tesseract.js'
+import urlParser from 'url'
 
 async function extractTextFromImage(url) {
     try {
         console.log(url);
         const response = await fetch(url).catch(error => console.log("catch", error));
         console.log('hi');
-        const buffer = await response.buffer();
+        const buffer = await response.arrayBuffer();
         const image = await Tesseract.recognize(buffer, 'eng');
         return image.data.text;
     } catch (error) {
@@ -18,11 +19,10 @@ async function extractTextFromImage(url) {
 
 http.createServer((request, response) => {
 	const { method, url } = request
-	const url_parts = require('url').parse(request.url);
+	const url_parts = urlParser.parse(request.url);
 	if (method == 'GET' && url_parts.query) {
 		let imageUrl = url_parts.query.substring(4);
 		if (imageUrl) {
-			console.log('works');
 			extractTextFromImage(imageUrl)
 				.then(text => {
 					response.writeHead(200, { 'Content-Type': 'text/plain' });
