@@ -3,7 +3,7 @@ from detoxify import Detoxify
 import os
 
 app = Flask(__name__)
-detoxify = Detoxify('unbiased-small')
+detoxify = Detoxify('original-small')
 
 @app.route('/', methods=['GET'])
 def test():

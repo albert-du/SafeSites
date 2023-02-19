@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  image-service:
+    build:
+      context: ./imageService/
+    container_name: safesites-image-service
+    ports:
+      - 5201:81
+    restart: always
+
+  hate-speech-service:
+    build:
+      context: ./hateSpeechService/
+    container_name: safesites-hate-speech-service
+    ports:
+      - 5202:5000
+    restart: always
+
+  backend-service:
+    build:
+      context: ./server/
+    container_name: safesites-backend-service
+    ports:
+      - 5200:80
+    restart: always
+    environment:
+      - HATE_SERVICE_ID=hate-speech-service
+      - HATE_SERVICE_PORT=5000
+      - IMAGE_PROCESSOR_ID=image-service
+      - IMAGE_PROCESSOR_PORT=81
