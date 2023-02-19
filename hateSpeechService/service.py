@@ -5,12 +5,9 @@ import os
 app = Flask(__name__)
 detoxify = Detoxify('original-small')
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 def test():
-    args = request.args
-    text = args.get("text")
-    if text is None:
-        return "No text provided, use the 'text' query parameter.", 400
+    text = request.data.decode("utf-8")
     response = str(detoxify.predict(text)).replace("'", '"')
     return Response(response, mimetype='application/json')
 

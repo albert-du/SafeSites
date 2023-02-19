@@ -141,8 +141,8 @@ let server = http.createServer(function (req, res) {
                     text = text.replace(/[^a-zA-Z0-9 ]/g, '');
                     Promise.all(fetches).then(() => {
                         return fetch(
-                            `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}?text=${text}`,
-                            { method: 'GET' }
+                            `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}`,
+                            { method: 'POST', body: text }
                         )
                             .catch(error => console.log("error (server -> hate service):", error))
                             .then(response => response.text())
