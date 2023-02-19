@@ -2,19 +2,20 @@ let http = require('http')
 let fs = require('fs')
 let puppeteer = require('puppeteer')
 let cheerio = require("cheerio")
+require('dotenv').config();
 
-let pathToStatic = "/place/holder/to/build/static/"
-let ip = "10.0.0.211"
+let pathToStatic = process.env.PATH_TO_STATIC
+let ip = process.env.IP
 
 //micro services
 //hate speech
-let hateSpeechServiceID = "hateService"
-let hateSpeechServiceEndPoint = "speech"
-let hateSpeechServicePort = 80
+let hateSpeechServiceID = process.env.HATE_SERVICE_ID
+let hateSpeechServiceEndPoint = ""
+let hateSpeechServicePort = process.env.HATE_SERVICE_PORT
 
 //image proccessor
-let imageProcessorServiceID = "imageProcessor"
-let imageProcessorServicePort = 80
+let imageProcessorServiceID = process.env.IMAGE_PROCESSOR_ID
+let imageProcessorServicePort = process.env.IMAGE_PROCESSOR_PORT
 let imageProcessorServiceEndPoint = ""
 
 function serveFile(method, path, name, contentType, surl, res, req) {
@@ -121,7 +122,13 @@ let server = http.createServer(function (req, res) {
                                 { method: 'GET' }
                             )
                                 .catch(error => console.log("error (server -> image processor):", error))
-                                .then(response => response.text())
+                                .then(response => {
+                                    if (response) {
+                                        return response.text()
+                                    } else {
+                                        return ""
+                                    }
+                                })
                                 .then(r => text += r)
                         )
                     }
@@ -131,7 +138,7 @@ let server = http.createServer(function (req, res) {
                             `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}?text=${text}`,
                             { method: 'GET' }
                         )
-                            .catch(error => console.log("error (server -> image processor):", error))
+                            .catch(error => console.log("error (server -> hate service):", error))
                             .then(response => response.text())
                             .then(r => {
                                 res.write(r)
