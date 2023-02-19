@@ -113,3 +113,56 @@
 .endspacing{
     margin-top:50px;
 }
+
+.loader-container {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    animation: fade-in 1s ease-in forwards;
+}
+
+@keyframes fade-in {
+    0% {
+        background: rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        background: rgba(0, 0, 0, 0);
+        visibility: hidden;
+    }
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid;
+    border-color: black transparent black transparent;
+    border-radius: 50%;
+    animation: spin-anim 1.8s linear infinite;
+}
+
+@keyframes fade-in-spinner {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(360deg);
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
