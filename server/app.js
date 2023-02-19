@@ -1,21 +1,21 @@
 let http = require('http')
 let fs = require('fs')
-let puppeteer = require('puppeteer');
-let cheerio = require("cheerio");
+let puppeteer = require('puppeteer')
+let cheerio = require("cheerio")
 
-let pathToStatic = "/home/alexander_i_bakalov/ConnectMyMind/ConnectMyMind/client/connect-my-mind/build/static/"
+let pathToStatic = "/place/holder/to/build/static/"
 let ip = "10.0.0.211"
 
 //micro services
 //hate speech
-let hateSpeechServiceID = "hateSpeech"
-let hateSpeechServicePort = 80
+let hateSpeechServiceID = "hateService"
 let hateSpeechServiceEndPoint = "speech"
+let hateSpeechServicePort = 80
 
 //image proccessor
 let imageProcessorServiceID = "imageProcessor"
 let imageProcessorServicePort = 80
-let imageProcessorServiceEndPoint = "imageProcessor"
+let imageProcessorServiceEndPoint = ""
 
 function serveFile(method, path, name, contentType, surl, res, req) {
     if (method == 'GET' && surl.pathname == path) {
@@ -89,12 +89,13 @@ let server = http.createServer(function (req, res) {
                 (async () => {
                     const browser = await puppeteer.launch({
                         headless: true
-                    });
-                    const page = (await browser.pages())[0];
-                    await page.goto(url);
-                    text = await page.$eval('*', (el) => el.innerText);
+                    })
+                    const page = (await browser.pages())[0]
+                    await page.goto(url)
+                    text = await page.$eval('*', (el) => el.innerText)
+                    text = text.replace(/\n/g, " ")
 
-                    await browser.close();
+                    await browser.close()
 
                     let imagesArr = []
                     $("img").each((i, e) => {
@@ -116,7 +117,7 @@ let server = http.createServer(function (req, res) {
                     for (let i = 0; i < imagesArr.length; i++) {
                         fetches.push(
                             fetch(
-                                `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?url=${imagesArr[i]}`,
+                                `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?img=${imagesArr[i]}`,
                                 { method: 'GET' }
                             )
                                 .catch(error => console.log("error (server -> image processor):", error))
@@ -137,7 +138,7 @@ let server = http.createServer(function (req, res) {
                                 res.end()
                             })
                     })
-                })();
+                })()
             })
     }
 
