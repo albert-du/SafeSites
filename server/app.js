@@ -89,13 +89,14 @@ let server = http.createServer(function (req, res) {
                 let $ = cheerio.load(r);
                 (async () => {
                     const browser = await puppeteer.launch({
-                        headless: true
+                        headless: true,
+                        args: ['--no-sandbox', '--disable-gpu'],
                     })
+                    await new Promise(r => setTimeout(r, 1000));
                     const page = (await browser.pages())[0]
                     await page.goto(url)
                     text = await page.$eval('*', (el) => el.innerText)
                     text = text.replace(/\n/g, " ")
-
                     await browser.close()
 
                     let imagesArr = []
@@ -110,6 +111,7 @@ let server = http.createServer(function (req, res) {
                                     imgSrc = url + imgSrc
                                 }
                             }
+                            
                             imagesArr.push(imgSrc)
                         }
                     })
@@ -132,7 +134,7 @@ let server = http.createServer(function (req, res) {
                                 .then(r => text += r)
                         )
                     }
-
+                    text = text.replace(/[^a-zA-Z0-9 ]/g, '');
                     Promise.all(fetches).then(() => {
                         return fetch(
                             `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}?text=${text}`,
