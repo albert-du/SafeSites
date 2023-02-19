@@ -123,9 +123,8 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0);
     z-index: 1;
-    animation: fade-in 1s ease-in forwards;
 }
 
 @keyframes fade-in {
