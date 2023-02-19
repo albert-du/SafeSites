@@ -14,6 +14,7 @@ function App() {
     <Router>
     <Navbar />
       <Switch>
+        <Route path='/' component={Scan} exact><Scan /></Route>
         <Route path='/Scan' component={Scan} exact><Scan /></Route>
         <Route path='/About' component={About} exact><About /></Route>
       </Switch>
