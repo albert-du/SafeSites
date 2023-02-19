@@ -87,10 +87,24 @@ let server = http.createServer(function (req, res) {
             url,
             { method: 'GET' }
         )
-            .catch(error => console.log("error (server -> url):", error))
-            .then(response => response.text())
+            .catch(error => {
+                console.log("error (server -> url):", error)
+                res.write("")
+                res.end()
+                return
+            })
+            .then(response => {
+                if (response) {
+                    return response.text()
+                }
+            })
             .then(r => {
-                let $ = cheerio.load(r);
+                let $
+                try {
+                    $ = cheerio.load(r);
+                } catch {
+                    return
+                }
                 (async () => {
                     const browser = await puppeteer.launch({
                         headless: true,
