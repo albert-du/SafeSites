@@ -1,13 +1,22 @@
 import http from 'http'
 import fetch from 'node-fetch'
+import mime from 'mime';
 import Tesseract from 'tesseract.js'
 import urlParser from 'url'
 
 async function extractTextFromImage(url) {
 	try {
-		if (url.endsWith('jpg') || url.endsWith('png') || url.endsWith('bmp') || url.endsWith('pbm')) {
-			const response = await fetch(url).catch(error => console.log("catch", error));
-			console.log(url, "--------------------------")
+		const response = await fetch(url).catch(error => console.log("catch", error))
+		
+		let header = ""
+		response.headers.forEach((value, name) => {
+			if (name === "content-type")
+				header = value;
+		});
+		console.log(url, "--------------------------")
+		let m = mime.getExtension(header);
+		console.log(m)
+		if (["jpg", "jpeg", "png", "bmp", "pbm"].includes(m.toLowerCase())) {
 			const buffer = await response.arrayBuffer();
 			let image = await Tesseract.recognize(buffer, 'eng', { errorHandler: m => console.log(m) })
 			return image.data.text;
