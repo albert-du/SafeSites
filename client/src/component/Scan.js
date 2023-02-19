@@ -11,15 +11,31 @@ export default class Scan extends React.Component {
         insult: "0.00",
         threat: "0.00",
         sexual_explicity: "0.00",
+        loading: "none",
+        opacity: "hidden",
+        animation: "spin-anim 1.8s linear infinite",
     }
     render() {
         let startingURL
+
         let that = this
         function handleSubmit(event) {
+            that.setState({
+                toxicity: "0.00",
+                severe_toxicity: "0.00",
+                obscene: "0.00",
+                identity_attack: "0.00",
+                insult: "0.00",
+                threat: "0.00",
+                sexual_explicity: "0.00",
+                loading: "flex",
+                opacity: "visible",
+                animation: "spin-anim 1.8s linear infinite",
+            })
             event.preventDefault();
             fetch(`http://${window.location.hostname}/url?url=${startingURL}`)
                 .then(res => res.json())
-                .then(json => {
+                .then(async json => {
                     that.setState({
                         toxicity: !isNaN((json.toxicity * 100).toFixed(2)) ? (json.toxicity * 100).toFixed(2) : 0.01,
                         severe_toxicity: !isNaN((json.severe_toxicity * 100).toFixed(2)) ? (json.severe_toxicity * 100).toFixed(2) : 0.01,
@@ -28,6 +44,22 @@ export default class Scan extends React.Component {
                         insult: !isNaN((json.insult * 100).toFixed(2)) ? (json.insult * 100).toFixed(2) : 0.01,
                         threat: !isNaN((json.threat * 100).toFixed(2)) ? (json.threat * 100).toFixed(2) : 0.01,
                         sexual_explicity: !isNaN((json.sexual_explicity * 100).toFixed(2)) ? (json.sexual_explicity * 100).toFixed(2) : 0.01,
+                        loading: "flex",
+                        opacity: "visible",
+                        animation: "fade-in-spinner 0.5s ease-in forwards",
+                    })
+                    await new Promise(r => setTimeout(r, 2000));
+                    that.setState({
+                        toxicity: !isNaN((json.toxicity * 100).toFixed(2)) ? (json.toxicity * 100).toFixed(2) : 0.01,
+                        severe_toxicity: !isNaN((json.severe_toxicity * 100).toFixed(2)) ? (json.severe_toxicity * 100).toFixed(2) : 0.01,
+                        obscene: !isNaN((json.obscene * 100).toFixed(2)) ? (json.obscene * 100).toFixed(2) : 0.01,
+                        identity_attack: !isNaN((json.identity_attack * 100).toFixed(2)) ? (json.identity_attack * 100).toFixed(2) : 0.01,
+                        insult: !isNaN((json.insult * 100).toFixed(2)) ? (json.insult * 100).toFixed(2) : 0.01,
+                        threat: !isNaN((json.threat * 100).toFixed(2)) ? (json.threat * 100).toFixed(2) : 0.01,
+                        sexual_explicity: !isNaN((json.sexual_explicity * 100).toFixed(2)) ? (json.sexual_explicity * 100).toFixed(2) : 0.01,
+                        loading: "none",
+                        opacity: "hidden",
+                        animation: "spin-anim 1.8s linear infinite"
                     })
                 })
         }
@@ -46,6 +78,9 @@ export default class Scan extends React.Component {
                             Scan
                         </button>
                     </form>
+                </div>
+                <div className="loader-container" style={{ visibility: this.state.opacity }}>
+                    <div className="spinner" display={this.state.loading} style={{ visibility: this.state.opacity, animation: this.state.animation }}></div>
                 </div>
                 <div className='resultBox'>
                     <form className="results">
