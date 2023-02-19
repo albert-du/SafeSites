@@ -5,6 +5,9 @@ let cheerio = require("cheerio")
 require('dotenv').config();
 
 let pathToStatic = process.env.PATH_TO_STATIC
+
+let pathToBuild = pathToStatic.substring(0, pathToStatic.length - 9)
+
 let ip = process.env.IP
 
 //micro services
@@ -75,6 +78,7 @@ let server = http.createServer(function (req, res) {
     if (method == 'GET' && surl.pathname == '/url') {
         let searchParams = surl.searchParams
         let url = searchParams.get('url')
+        console.log(url)
 
         res.writeHead(200, { 'Content-Type': 'application/json' })
 
@@ -172,7 +176,11 @@ let server = http.createServer(function (req, res) {
             })
     }
 
-    //if (serveFile("GET", "/style.css", "./style.css", "text/css", surl, res, req)) return
+    if (serveFile("GET", "/favico.ico", pathToBuild + "\\favicon.ico", "image/x-icon", surl, res, req)) return
+    if (serveFile("GET", "/", pathToBuild + "\\index.html", "text/html", surl, res, req)) return
+    if (serveFile("GET", "/scan", pathToBuild + "\\index.html", "text/html", surl, res, req)) return
+    if (serveFile("GET", "/asset-manifest.json", pathToBuild + "\\asset-manifest.json", "application/json", surl, res, req)) return
+    if (serveFile("GET", "/manifest.json", pathToBuild + "\\manifest.json", "application/json", surl, res, req)) return
 })
 
 server.listen(80)

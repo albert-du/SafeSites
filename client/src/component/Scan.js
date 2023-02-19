@@ -2,30 +2,15 @@ import { Container } from "@material-ui/core"
 import React, { Component, useRef } from "react"
 import './Scan.css'
 
-// function submitRequest() {
-//     let url = document.getElementById("enteredURL").value;
-//     return fetch(`http://${window.location.hostname}/url?url=${url}`)
-//         .then(res => res.text())
-//         .then(resText => {
-//             let data = JSON.parse(resText)
-//             document.getElementsByClassName("toxicity").innerHTML = `Toxicity: ${Math.round((data.toxicity + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("st").innerHTML = `Severe Toxicity: ${Math.round((data.severe_toxicity + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("o").innerHTML = `Obscenity: ${Math.round((data.obscene + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("ia").innerHTML = `Identity Attack: ${Math.round((data.identity_attack + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("i").innerHTML = `Insult: ${Math.round((data.insult + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("t").innerHTML = `Threat: ${Math.round((data.threat + Number.EPSILON) * 100)}%`
-//             document.getElementsByClassName("se").innerHTML = `Sexual Explicity: ${Math.round((data.sexual_explicit + Number.EPSILON) * 100)}%`
-//         })
-// }
 export default class Scan extends React.Component {
     state = {
-        toxicity: null,
-        severe_toxicity: null,
-        obscene: null,
-        identity_attack: null,
-        insult: null,
-        threat: null,
-        sexual_explicity: null
+        toxicity: "0.00",
+        severe_toxicity: "0.00",
+        obscene: "0.00",
+        identity_attack: "0.00",
+        insult: "0.00",
+        threat: "0.00",
+        sexual_explicity: "0.00",
     }
     render() {
         let startingURL
@@ -36,13 +21,13 @@ export default class Scan extends React.Component {
                 .then(res => res.json())
                 .then(json => {
                     that.setState({
-                        toxicity: `Toxicity: ${Math.round((json.toxicity + Number.EPSILON) * 100)}%`,
-                        severe_toxicity: `Severe Toxicity: ${Math.round((json.severe_toxicity + Number.EPSILON) * 100)}%`,
-                        obscene: `Obscenity: ${Math.round((json.obscene + Number.EPSILON) * 100)}%`,
-                        identity_attack: `Identity Attack: ${Math.round((json.identity_attack + Number.EPSILON) * 100)}%`,
-                        insult: `Insult: ${Math.round((json.insult + Number.EPSILON) * 100)}%`,
-                        threat: `Threat: ${Math.round((json.threat + Number.EPSILON) * 100)}%`,
-                        sexual_explicity: `Sexual Explicity: ${Math.round((json.sexual_explicit + Number.EPSILON) * 100)}%`,
+                        toxicity: !isNaN((json.toxicity * 100).toFixed(2)) ? (json.toxicity * 100).toFixed(2) : 0.01,
+                        severe_toxicity: !isNaN((json.severe_toxicity * 100).toFixed(2)) ? (json.severe_toxicity * 100).toFixed(2) : 0.01,
+                        obscene: !isNaN((json.obscene * 100).toFixed(2)) ? (json.obscene * 100).toFixed(2) : 0.01,
+                        identity_attack: !isNaN((json.identity_attack * 100).toFixed(2)) ? (json.identity_attack * 100).toFixed(2) : 0.01,
+                        insult: !isNaN((json.insult * 100).toFixed(2)) ? (json.insult * 100).toFixed(2) : 0.01,
+                        threat: !isNaN((json.threat * 100).toFixed(2)) ? (json.threat * 100).toFixed(2) : 0.01,
+                        sexual_explicity: !isNaN((json.sexual_explicity * 100).toFixed(2)) ? (json.sexual_explicity * 100).toFixed(2) : 0.01,
                     })
                 })
         }
@@ -56,7 +41,7 @@ export default class Scan extends React.Component {
                 </div>
                 <div className="search">
                     <form className="searchingURL" onSubmit={handleSubmit}>
-                        <input type="text" className="borders" placeholder="Enter URL..." id="enteredURL" value={startingURL} />
+                        <input type="text" className="borders" placeholder="Enter URL..." id="enteredURL" onChange={(e) => startingURL = (e.target.value)} value={startingURL} />
                         <button className='btn1'>
                             Scan
                         </button>
@@ -64,13 +49,13 @@ export default class Scan extends React.Component {
                 </div>
                 <div className='resultBox'>
                     <form className="results">
-                        <text className="toxicity">Toxicity: 0.00% </text>
-                        <text className="st">Severe Toxicity: 0.00%</text>
-                        <text className="o">Obscenity: 0.00%</text>
-                        <text className="ia">Identity Attack: 0.00%</text>
-                        <text className="i">Insult: 0.00%</text>
-                        <text className="t">Threat: 0.00%</text>
-                        <text className="se">Sexually Explicit: 0.00%</text>
+                        <text className="toxicity">Toxicity: {this.state.toxicity}%</text>
+                        <text className="st">Severe Toxicity: {this.state.severe_toxicity}%</text>
+                        <text className="o">Obscenity: {this.state.obscene}%</text>
+                        <text className="ia">Identity Attack: {this.state.identity_attack}%</text>
+                        <text className="i">Insult: {this.state.insult}%</text>
+                        <text className="t">Threat: {this.state.threat}%</text>
+                        <text className="se">Sexually Explicit: {this.state.sexual_explicity}%</text>
                     </form>
                 </div>
                 <div className="mission">
