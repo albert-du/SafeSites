@@ -1,3 +1,5 @@
+*.traineddata
+
 # Logs
 logs
 *.log
