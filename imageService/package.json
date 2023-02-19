@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "node-fetch": "^3.3.0",
+    "tesseract.js": "^4.0.2"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "imageservice",
+  "type": "module",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "",
+  "license": "ISC"
+}
