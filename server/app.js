@@ -6,7 +6,7 @@ require('dotenv').config();
 
 let pathToStatic = process.env.PATH_TO_STATIC
 
-let pathToBuild = pathToStatic.substring(0, pathToStatic.length - 9)
+let pathToBuild = pathToStatic.substring(0, pathToStatic.length - 8)
 
 let ip = process.env.IP
 
