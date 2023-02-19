@@ -4,6 +4,8 @@ let puppeteer = require('puppeteer')
 let cheerio = require("cheerio")
 require('dotenv').config();
 
+let imgAnalysis = process.env.IMAGE_ANALYSIS
+
 let pathToStatic = process.env.PATH_TO_STATIC
 
 let pathToBuild = pathToStatic.substring(0, pathToStatic.length - 8)
@@ -118,42 +120,56 @@ let server = http.createServer(function (req, res) {
 
                     await browser.close()
 
-                    let imagesArr = []
-                    $("img").each((i, e) => {
-                        let imgSrc = $(e).attr('src')
+                    if (imgAnalysis) {
+                        let imagesArr = []
+                        $("img").each((i, e) => {
+                            let imgSrc = $(e).attr('src')
 
-                        if (imgSrc) {
-                            if (!imgSrc.startsWith("http")) {
-                                if (url.endsWith("/")) {
-                                    imgSrc = url.substring(0, url.length - 1) + imgSrc
-                                } else {
-                                    imgSrc = url + imgSrc
-                                }
-                            }
-                            imagesArr.push(imgSrc)
-                        }
-                    })
-
-                    let fetches = []
-                    for (let i = 0; i < imagesArr.length; i++) {
-                        fetches.push(
-                            fetch(
-                                `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?img=${imagesArr[i]}`,
-                                { method: 'GET' }
-                            )
-                                .catch(error => console.log("error (server -> image processor):", error))
-                                .then(response => {
-                                    if (response) {
-                                        return response.text()
+                            if (imgSrc) {
+                                if (!imgSrc.startsWith("http")) {
+                                    if (url.endsWith("/")) {
+                                        imgSrc = url.substring(0, url.length - 1) + imgSrc
                                     } else {
-                                        return ""
+                                        imgSrc = url + imgSrc
                                     }
+                                }
+                                imagesArr.push(imgSrc)
+                            }
+                        })
+
+                        let fetches = []
+                        for (let i = 0; i < imagesArr.length; i++) {
+                            fetches.push(
+                                fetch(
+                                    `http://${imageProcessorServiceID}:${imageProcessorServicePort}/${imageProcessorServiceEndPoint}?img=${imagesArr[i]}`,
+                                    { method: 'GET' }
+                                )
+                                    .catch(error => console.log("error (server -> image processor):", error))
+                                    .then(response => {
+                                        if (response) {
+                                            return response.text()
+                                        } else {
+                                            return ""
+                                        }
+                                    })
+                                    .then(r => text += r)
+                            )
+                        }
+                        text = text.replace(/[^a-zA-Z0-9 ]/g, '');
+                        Promise.all(fetches).then(() => {
+                            return fetch(
+                                `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}`,
+                                { method: 'POST', body: text }
+                            )
+                                .catch(error => console.log("error (server -> hate service):", error))
+                                .then(response => response.text())
+                                .then(r => {
+                                    res.write(r)
+                                    res.end()
                                 })
-                                .then(r => text += r)
-                        )
-                    }
-                    text = text.replace(/[^a-zA-Z0-9 ]/g, '');
-                    Promise.all(fetches).then(() => {
+                        })
+                    } else {
+                        text = text.replace(/[^a-zA-Z0-9 ]/g, '');
                         return fetch(
                             `http://${hateSpeechServiceID}:${hateSpeechServicePort}/${hateSpeechServiceEndPoint}`,
                             { method: 'POST', body: text }
@@ -164,7 +180,7 @@ let server = http.createServer(function (req, res) {
                                 res.write(r)
                                 res.end()
                             })
-                    })
+                    }
                 })()
             })
     }
