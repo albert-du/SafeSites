@@ -34,7 +34,7 @@ export default class Scan extends React.Component {
                     opacity: "visible",
                     animation: "spin-anim 1.8s linear infinite",
                 })
-                fetch(`http://${window.location.hostname}/url?url=${startingURL}`)
+                fetch(`/url?url=${startingURL}`)
                     .then(res => res.json())
                     .then(async json => {
                         that.setState({
